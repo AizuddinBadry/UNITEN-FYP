@@ -25,6 +25,19 @@ class ListingDetails extends React.Component{
 	handleHiring = () =>
 	{
 		var self = this;
+		axios.post('https://billplz-staging.herokuapp.com',{
+     	number_to_send_to:"+6"+self.state.user['phone'],
+     	job_names:self.state.listing['title']
+	     })
+	        .then(function (response) {
+	          console.log(response.data);
+	        })
+	        .catch(function (error) {
+	          console.log(error);
+	        });
+	}
+
+	handlePayment = () =>{
 		axios.post('http://localhost:3001/listing/hire',{
      	number_to_send_to:"+6"+self.state.user['phone'],
      	job_names:self.state.listing['title']
@@ -144,7 +157,7 @@ class ListingDetails extends React.Component{
 				            <Button color='black' onClick={this.close}>
 				              Cancel
 				            </Button>
-				            <Button positive icon='checkmark' labelPosition='right' content="Continue with payment" onClick={this.close} />
+				            <Button positive icon='checkmark' labelPosition='right' content="Continue with payment" onClick={this.handlePayment}/>
 				          </Modal.Actions>
 				        </Modal>
 
