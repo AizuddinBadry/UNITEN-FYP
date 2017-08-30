@@ -38,6 +38,7 @@ class ListingDetails extends React.Component{
 	}
 
 	handlePayment = () =>{
+		var self = this;
 		axios.post('http://localhost:3001/listing/hire',{
      	number_to_send_to:"+6"+self.state.user['phone'],
      	job_names:self.state.listing['title']
