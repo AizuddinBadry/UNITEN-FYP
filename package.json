@@ -19,7 +19,7 @@
   },
   "scripts": {
     "start": "NODE_PATH=src:src/Assets:src/Core:src/Dashboard:src/Home:src/Listing react-scripts start",
-    "build": "react-scripts build",
+    "build": "NODE_PATH=src:src/Assets:src/Core:src/Dashboard:src/Home:src/Listing react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
