@@ -46,13 +46,11 @@ render(){
           <ul data-submenu-title="Listings">
             <li><a href="/my_listing"><i className="sl sl-icon-layers"></i> My Listings</a></li>
             <li><a href="/my_orders"><i className="sl sl-icon-list"></i> My Orders</a></li>
-            <li><a href="/my_bookmarks"><i className="sl sl-icon-heart"></i> Bookmarks</a></li>
+            <li><a href="/my_task"><i className="sl sl-icon-clock"></i> My Task</a></li>
             <li><a href="/add_listing"><i className="sl sl-icon-plus"></i> Add Listing</a></li>
           </ul> 
 
           <ul data-submenu-title="Account">
-            <li><a href="/my_reviews"><i className="sl sl-icon-star"></i> Rewards</a></li>
-            <li><a href="/my_reviews"><i className="sl sl-icon-briefcase"></i> Earning</a></li>
             <li><a  onClick={this.handleLogout}><i className="sl sl-icon-power"></i> Logout</a></li>
           </ul>
           

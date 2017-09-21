@@ -130,11 +130,12 @@ render(){
     { key: 'j', text: 'task', value: 'task' },
   ]
   var categories = [
-  { value: 'Photograpy',  text:'Photography'},
-  { value: 'Homes', text:'Homes'},
-  { value: 'Deliveries', text:'Deliveries'},
-  { value: 'Technologies', text:'Technologies'},
-  { value: 'Vehicle',text:'Vehicle'}
+  { value: 'Photography',  text:'Photography'},
+  { value: 'Makeup', text:'Makeup'},
+  { value: 'Writing', text:'Writing'},
+  { value: 'Graphic Design', text:'Graphic Design'},
+  { value: 'Cleaning',text:'Cleaning'},
+  { value: 'Programming',text:'Programming'}
   ];
   var states = [
       { key: 'p', text: 'Penang', value: 'Penang' },

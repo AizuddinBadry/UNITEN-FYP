@@ -40,7 +40,6 @@ class Categories extends React.Component{
 	                  <i className="im im-icon-Happy"></i>
 	                  <h4>All</h4>
 	                </a>
-	                
 
 	                <a className="category-small-box" onClick={this.onEatDrink}>
 	                  <i className="im im-icon-Camera-3"></i>

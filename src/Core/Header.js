@@ -21,7 +21,6 @@ class Header extends Component {
           token: token
         })
         .then(function (response) {
-          console.log(response.data);
           if(response.data === false)
           {
             self.setState({loggedin:false})
@@ -62,8 +61,12 @@ class Header extends Component {
           </div>
           <div className="right-side">
             <div className="header-widget" >   
-              {this.state.loggedin ? '': <Button name='login' color='blue' content='Login' onClick={this.handleSubmit}/>}
-              {this.state.loggedin ?  <Button name='dashboard' color='youtube' icon='play' content='Dashboard' onClick={this.handleSubmit}/> : <Button name='start' inverted color='red' icon='play' onClick={this.handleSubmit}>Start Listing</Button>}
+              {this.state.loggedin ? '': 
+              <Button name='login' color='blue' content='Login' onClick={this.handleSubmit}/>
+              }
+              {this.state.loggedin ?  
+              <Button name='dashboard' color='youtube' icon='play' content='Dashboard' onClick={this.handleSubmit}/> : 
+              <Button name='start' inverted color='red' icon='play' onClick={this.handleSubmit}>Start Listing</Button>}
             </div>
           </div>
         </div>

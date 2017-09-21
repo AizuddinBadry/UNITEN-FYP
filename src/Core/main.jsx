@@ -48,6 +48,10 @@ const routes = [
     exact: true,
     main: () => <Dashboard/>
   },
+  { path: '/my_task',
+    exact: true,
+    main: () => <Dashboard/>
+  },
 ]
 class Main extends Component {
   render() {

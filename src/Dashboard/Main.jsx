@@ -10,6 +10,7 @@ import Sidebar from './DashboardSidebar'
 import AddListing from './DashboardAddListing'
 import MyListing from './DashboardMyListing'
 import MyOrders from './DashboardMyOrder'
+import MyTask from 'Dashboard/DashboardMyTask'
 import {Sticky} from 'semantic-ui-react'
 
 const routes = [
@@ -28,6 +29,10 @@ const routes = [
   { path: '/my_orders',
     exact: true,
     main: () => <MyOrders/>
+  },
+   { path: '/my_task',
+    exact: true,
+    main: () => <MyTask/>
   },
 
 ]

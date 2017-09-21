@@ -2,55 +2,115 @@ import React from 'react'
 import axios from 'axios'
 import Slider from 'react-slick'
 import Review from './Review'
-import { Button, Form, Input, TextArea, Select, Modal, Icon, Segment, Header, Dimmer, Loader } from 'semantic-ui-react'
-
+import WaitingPayment from './WaitingPayment'
+import { Button, Form, Input, TextArea, Select, Modal, Icon, Segment, Header } from 'semantic-ui-react'
+import NoImages from 'Assets/images/no_image.gif'
 
 class ListingDetails extends React.Component{
 	constructor(props) {
 	    super(props);
-	    this.state = {listing: [],user:[],open:false,load:false};
+	    this.state = {listing: [], user:[], open:false, load:false, loggedin:'', name:'', images:'', open_modal:false, bill_id:'', customer_number:'',
+						customer_id:'', description:'', duration:'', title:'', email:''};
 	  }
+
 	componentDidMount() {
 	var self = this;
      axios.get('http://localhost:3001/listing/view/'+ localStorage.getItem('listing_id'))
         .then(function (response) {
           console.log(response.data);
-          self.setState({listing: response.data['listing'], user: response.data['user']})
+          self.setState({
+          	listing: response.data['listing'], 
+          	user: response.data['user'], 
+          })
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+     var token = localStorage.getItem('token');
+     axios.post('http://localhost:3001/user/authenticate', {
+          token: token
+        })
+        .then(function (response) {
+          console.log(response.data);
+          if(response.data === false)
+          {
+            self.setState({loggedin:false})
+          }
+          else
+          {
+            self.setState({
+            	loggedin:true,
+            	name:response.data['name'],
+            	email:response.data['email'],
+            	customer_number:response.data['phone'],
+            	customer_id:response.data['id']
+            })
+          }
         })
         .catch(function (error) {
           console.log(error);
         });
 	}
 
-	handleHiring = () =>
-	{
+	handlePayment = () =>{
 		var self = this;
-		axios.post('https://billplz-staging.herokuapp.com',{
-     	number_to_send_to:"+6"+self.state.user['phone'],
-     	job_names:self.state.listing['title']
-	     })
+		axios.post('http://localhost:3001/listing/order/create',{
+			title:self.state.listing['title'],
+			images:self.state.listing['images'],
+			category:self.state.listing['category'],
+			customer_id:self.state.customer_id,
+			hobbez_id:self.state.user['id'],
+			description:self.state.description,
+			duration:self.state.duration,
+			duration_type:self.state.listing['rate']
+		})
 	        .then(function (response) {
-	          console.log(response.data);
+	        	self.setState({bill_id:response.data['id']})
+	          window.open(response.data['url'], '_blank');
+	        })
+	        .catch(function (error) {
+	          console.log(error);
+	    });
+
+		self.setState({open:false, open_modal:true})
+		axios.post('http://localhost:3001/transaction/payment',{
+			name:self.state.name,
+			email:self.state.email,
+			amount:self.state.listing['price']
+		})
+	        .then(function (response) {
+	        	self.setState({bill_id:response.data['id']})
+	          window.open(response.data['url'], '_blank');
 	        })
 	        .catch(function (error) {
 	          console.log(error);
 	        });
 	}
 
-	handlePayment = () =>{
-		var self = this;
-		axios.post('https://api-hobbez.herokuapp.com/transaction/payment')
-	        .then(function (response) {
-	          console.log(response.data);
-	        })
-	        .catch(function (error) {
-	          console.log(error);
-	        });
+	handleRedirect = (e) =>{
+		if(e.target.name === 'register')
+		{
+			window.location = '/registration'
+		}
+		else
+		{
+			window.location = '/login'
+		}
 	}
+
+	handleChanges = (e) =>{
+		this.setState({description:e.target.value})
+	}
+
+	handleLogChanges = (val,e) =>{
+		this.setState({[e.name]:e.value})
+	}
+
 	show = dimmer => () => this.setState({ dimmer, open: true })
   	close = () => this.setState({ open: false })
 	render(){
-		const { open, dimmer, load } = this.state
+		const { open, dimmer, load, name, email, amount, open_modal, bill_id, description, duration} = this.state
 		const options = [
 			  { key: 'i', text: 'Immediately', value: 'immediately' },
 			  { key: '1', text: 'in 1 days', value: '1' },
@@ -71,10 +131,10 @@ class ListingDetails extends React.Component{
 		return(
 			<div>
 				 <Slider {...settings}>
-		          <a href={this.state.listing['images']} className="item mfp-gallery"><img src={this.state.listing['images']}  height="400px" width="500"/></a>
-		          <a href={this.state.listing['images']} className="item mfp-gallery"><img src={this.state.listing['images2']} height="400px" width="500"/></a>
-		          <a href={this.state.listing['images']} className="item mfp-gallery"><img src={this.state.listing['images3']} height="400px" width="500"/></a>
-		          <a href={this.state.listing['images']} className="item mfp-gallery"><img src={this.state.listing['images4']} height="400px" width="500"/></a>
+		          <a href={this.state.listing['images']} className="item mfp-gallery"><img src={this.state.listing['images'] ? this.state.listing['images'] : NoImages}  height="400px" width="500"/></a>
+		          <a href={this.state.listing['images']} className="item mfp-gallery"><img src={this.state.listing['images2'] ? this.state.listing['images2'] : NoImages} height="400px" width="500"/></a>
+		          <a href={this.state.listing['images']} className="item mfp-gallery"><img src={this.state.listing['images3'] ? this.state.listing['images3'] : NoImages} height="400px" width="500"/></a>
+		          <a href={this.state.listing['images']} className="item mfp-gallery"><img src={this.state.listing['images4'] ? this.state.listing['images4'] : NoImages} height="400px" width="500"/></a>
 		        </Slider>
 				<div className="container">
 					<div className="row sticky-wrapper">
@@ -108,7 +168,11 @@ class ListingDetails extends React.Component{
 								{this.state.listing['description']}
 							</div>
 							<hr/>
-							<Review/>
+
+							<Review
+							listing_id={this.state.listing['id']}
+							/>
+
 						</div>
 						<div className="col-lg-4 col-md-4 margin-top-75 sticky">
 							<div className="boxed-widget margin-top-35">
@@ -116,7 +180,6 @@ class ListingDetails extends React.Component{
 								<center><p><img className="img-circle" src={this.state.user['picture']} width="150px" height="150px"/></p></center>
 								<ul className="listing-details-sidebar">
 									<li><i className="sl sl-icon-user"></i>{this.state.user['name']}</li>
-									<li><i className="sl sl-icon-phone"></i>{this.state.user['phone']}</li>
 								</ul>
 
 								<ul className="listing-details-sidebar social-profiles">
@@ -127,38 +190,62 @@ class ListingDetails extends React.Component{
 								<center><a onClick={this.show('blurring')} className="send-message-to-owner button popup-with-zoom-anim"> Hire Hobbez</a></center>
 								</div>
 							</div>
-							<div className="listing-share margin-top-40 margin-bottom-40 no-border">
-								<button className="like-button"><span className="like-icon"></span> Bookmark this listing</button> 
-								<span>1 people bookmarked this listing</span>
-									<div className="clearfix"></div>
-							</div>
 
 						</div>
-						 <Modal size='small' dimmer={dimmer} open={open} onClose={this.close}>
+						{this.state.loggedin ?  
+			              <Modal size='small' dimmer={dimmer} open={open} onClose={this.close}>
 				          <Modal.Header>Task Details</Modal.Header>
 				          <Segment>
 				          <Modal.Content>
 				            <Modal.Description>
-				            
-				            <Dimmer active={load}>
-						        <Loader>Waiting for payment</Loader>
-						     </Dimmer>
-				              <Form.TextArea label='Details'  placeholder='Briefly explain your task...' />
-				              <Form.Select label='Task Duration' options={options} placeholder='Duration' />
-				              <Header as='h5' style={{color:'orange'}}>*Refund will be given if Hobbez cannot complete the task.</Header>
-
+						     <Form>
+							     <Form.Field>
+								      <label>Name</label>
+								      <input name='name' value={name} disabled/>
+								  </Form.Field>
+								  <Form.Field>
+								      <label>Email</label>
+								      <input name='email' value={email} disabled/>
+								  </Form.Field>
+					              <Form.TextArea label='Description:' name="description"  placeholder='Briefly explain your task' value={description} onChange={this.handleChanges} />
+					              <Form.Select label='When to start:' name="duration" options={options} placeholder='Choose' value={duration} onChange={this.handleLogChanges}/>
+				              </Form>
+				              <br/>
+				              <center><Header as='h1'>Total: RM{this.state.listing['price']}</Header></center>
+				              <Header as='h6' style={{color:'orange'}}>*Money back guranteed if Hobbez cannot completed the task in given duration.</Header>
 				            </Modal.Description>
 				          </Modal.Content>
 				          </Segment>
-				          
 				          <Modal.Actions>
 				            <Button color='black' onClick={this.close}>
 				              Cancel
 				            </Button>
 				            <Button positive icon='checkmark' labelPosition='right' content="Continue with payment" onClick={this.handlePayment}/>
 				          </Modal.Actions>
+				        </Modal>: 
+			              <Modal size='small' dimmer={dimmer} open={open} onClose={this.close}>
+				          <Modal.Header>Hobbez Hiring</Modal.Header>
+				          <Segment>
+				          <Modal.Content>
+				            <Modal.Description>
+				              <center><Header as='h1'>Please login to hire this Hobbez</Header></center>
+				            </Modal.Description>
+				          </Modal.Content>
+				          </Segment>
+				          <Modal.Actions>
+							<Button color='red' content="Register" onClick={this.handleRedirect}/>
+				            <Button color='blue' content="Login" onClick={this.handleRedirect}/>
+				          </Modal.Actions>
 				        </Modal>
-
+			          	}
+			          	<WaitingPayment
+			          	open={open_modal}
+			          	dimmer={'blurring'}
+			          	bill_id={bill_id}
+			          	phone={this.state.user['phone']}
+			          	listing_title={this.state.listing['title']}
+			          	customer_number={this.state.customer_number}
+			          	/>
 					</div>
 				</div>
 			</div>

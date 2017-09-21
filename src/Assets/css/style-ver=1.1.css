@@ -1728,7 +1728,7 @@ ul.select-options li {
 	padding: 20px 24px;
 	overflow-y: auto;
 	white-space: normal;
-	width: 460px;
+	width: 250px;
 }
 .panel-dropdown.wide .panel-dropdown-content {
 	width: 570px;
@@ -1799,6 +1799,10 @@ button.panel-cancel:active {
 }
 .panel-dropdown.float-right {
 	float: right;
+}
+
+.panel-dropdown.float-left {
+	float: left;
 }
 .panel-dropdown.float-right .panel-dropdown-content {
 	left: auto;

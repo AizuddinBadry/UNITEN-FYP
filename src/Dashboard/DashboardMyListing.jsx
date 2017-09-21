@@ -10,13 +10,14 @@ class DashboardMyListing extends Component{
 constructor(props) {
     super(props);
     this.state = {user_id:'',listing:[],open: false, title:'',image:'',image2:'',image3:'',image4:'', description:'',price:'',
-                  state:'',city:'',listing_id:''}
+                  state:'',city:'',listing_id:'',review_list:[]}
   }
 
   componentDidMount() {
     var self = this;
      document.title = "My Listing";
      var token = localStorage.getItem('token');
+     var listing_id = localStorage.getItem('listing_id')
      axios.post('http://localhost:3001/user/authenticate', {
           token: token
         })
@@ -37,6 +38,14 @@ constructor(props) {
         .catch(function (error) {
           console.log(error);
         });
+
+        axios.get('http://localhost:3001/review/listing/' + listing_id)
+          .then(function (response) {
+            self.setState({review_list:response.data})
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
   }
 
   handleDelete = (e) =>
@@ -76,10 +85,13 @@ constructor(props) {
 
 render(){
   var self = this;
-  const { open, dimmer , title, image, image2, image3, image4, description, price, state, city, listing_id,rate} = this.state
+  const { open, dimmer , title, image, image2, image3, image4, description, price, state, city, listing_id, rate} = this.state
   const divStyle = {
   color: 'red',
   };
+  const review_list = this.state.review_list.map(function(index){
+    
+  })
   const services_listing = this.state.listing.map(function(index){
     return(
        <li key={index.id}>
@@ -100,7 +112,7 @@ render(){
                 <div className="star-rating" data-rating="5">
                   <p><i style={divStyle} className="sl sl-icon-like"></i> 0 <i className="sl sl-icon-dislike"></i> 0</p>
                   <div className="rating-counter">
-                    <span>(0 reviews)</span>
+                    <span>({review_list.length} reviews)</span>
                   </div>
                 </div>
               </div>

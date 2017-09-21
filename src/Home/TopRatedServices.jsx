@@ -23,8 +23,8 @@ class TopRatedServices extends Component{
     localStorage.setItem("categories", 'Graphic Design');
     window.location = '/listing'
   }
-  onMechanic(e){
-    localStorage.setItem("categories", 'Mechanic');
+  onCleaning(e){
+    localStorage.setItem("categories", 'Cleaning');
     window.location = '/listing'
   }
   onProgramming(e){
@@ -110,11 +110,11 @@ render(){
 
                 <div className="col-md-4">
                 <div className="carousel-item">
-                  <a  className="listing-item-container" onClick={this.onMechanic}>
+                  <a  className="listing-item-container" onClick={this.onCleaning}>
                     <div className="listing-item">
-                      <img src="images/mechanic.jpg" alt=""/>
+                      <img src="images/cleaner.jpg" alt=""/>
                       <div className="listing-item-content">
-                        <span className="tag">Mechanics</span>
+                        <span className="tag">Cleaning</span>
                       </div>
                       
                     </div>

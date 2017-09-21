@@ -5,16 +5,16 @@ import { Button, Form, Input, TextArea, Select, Modal, Icon, Segment } from 'sem
 import axios from 'axios';
 
 
-class DashboardMyListing extends Component{
+class DashboardMyTask extends Component{
 constructor(props) {
     super(props);
     this.state = {user_id:'',listing:[],open: false,open2: false, title:'',image:'',image2:'',image3:'',image4:'', description:'',price:'',
-                  state:'',city:'',listing_id:''}
+                  state:'',city:'',listing_id:'',report_description:''}
   }
 
   componentDidMount() {
     var self = this;
-     document.title = "My Orders";
+     document.title = "My Task";
      var token = localStorage.getItem('token');
      axios.post('http://localhost:3001/user/authenticate', {
           token: token
@@ -22,7 +22,7 @@ constructor(props) {
         .then(function (response) {
           console.log(response.data);
           self.setState({user_id: response.data['id']})
-            axios.post('http://localhost:3001/services/orders', {
+            axios.post('http://localhost:3001/services/task', {
               id: self.state.user_id
             })
             .then(function (response) {
@@ -57,44 +57,58 @@ constructor(props) {
   }
 
   handleChange = (e) => {
-      localStorage.setItem('listing_id', e.target.value)
-      if((localStorage.getItem('listing_id')))
-      {
-        var listing_id = localStorage.getItem('listing_id')
-        window.location = '/listing/'+listing_id
-      }
-      else
-      {
-        
-      }
+    var self = this;
+    self.setState({[e.target.name]: e.target.value})
   }
-  show = dimmer => () => this.setState({ dimmer, open: true })
-  show2 = dimmer => () => this.setState({ dimmer, open2: true })
+
+  submitStatus = (e) => {
+     var self = this;
+     axios.post('http://localhost:3001/task/status/' + e.target.value, {
+          type: e.target.value,
+          status: e.target.value,
+          listing_id: self.state.listing_id,
+          description: self.state.report_description,
+          [e.target.name]:e.target.name
+        })
+        .then(function (response) {
+          window.location.reload()
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+  }
+
+  show = dimmer => (e) => {
+    this.setState({ dimmer, open: true, listing_id:e.target.value  })
+  }
+  show2 = dimmer => (e) =>{
+    this.setState({ dimmer, open2: true, listing_id:e.target.value })
+  } 
   close = () => this.setState({ open: false })
   close2 = () => this.setState({ open2: false })
 
 
 render(){
   var self = this;
-  const { open, open2, dimmer , title, image, image2, image3, image4, description, price, state, city, listing_id,rate} = this.state
+  const { open, open2, dimmer , title, image, image2, image3, image4, description, price, state, city, listing_id, rate, report_description} = this.state
   const divStyle = {
   color: 'red',
   };
-  const services_listing = this.state.listing.map(function(index){
 
+  const services_listing = this.state.listing.map(function(index){
     const status = (bool) =>{
       if(index.status_by_hobbez)
       {
         if(index.status_by_customer === null)
         {
-          return <div><Button color='teal' onClick={self.show('blurring')}>Delivered</Button><Button color='red' onClick={self.show2('blurring')}>Not Delivered</Button></div>
+          return 'Waiting for customer'
         }
         else
         {
           return 'Completed'
         }
       } else {
-        return 'Waiting for provider'
+        return <div><Button value={index.id} name='provider' color='teal' onClick={self.submitStatus}>Delivered</Button><Button value={index.id} color='red' onClick={self.show2('blurring')}>Not Delivered</Button></div>
       }
     }
 
@@ -124,29 +138,19 @@ render(){
         <div className="buttons-to-right">
           {status(index.status_by_hobbez)}
         </div>
-          <Modal size='tiny' dimmer={dimmer} open={open} onClose={self.close}>
-          <Modal.Header><center>Rate</center></Modal.Header>
-          <Modal.Content>
-            <Modal.Description>
-              <center>
-              <Button size='massive' circular color='green' icon='like outline' value='true' name='upvote' onClick={self.submitStatus}/>
-              <Button size='massive' circular color='red' icon='dislike outline' value='true' name='downvote' onClick={self.submitStatus}/>
-              </center>
-            </Modal.Description>
-          </Modal.Content>
-        </Modal>
+        
         <Modal size='tiny' dimmer={dimmer} open={open2} onClose={self.close2}>
           <Modal.Header><center>Report</center></Modal.Header>
           <Modal.Content>
             <Modal.Description>
               <center>
-              <Form.TextArea placeholder='Tell us more about this task...' />
+              <Form.TextArea name='report_description' value={report_description} placeholder='Tell us more about this task...' onChange={self.handleChange}/>
               </center>
             </Modal.Description>
           </Modal.Content>
           <Modal.Actions>
           <center>
-            <Button color='green'>Submit</Button>
+            <Button color='green' value='false' onClick={self.submitStatus}>Submit</Button>
           </center>
           </Modal.Actions>
         </Modal>
@@ -160,10 +164,7 @@ render(){
         <div>
           <div className="row">
             <div className="col-md-12">
-              <h2>My Orders</h2>
-              <nav id="breadcrumbs">
-               
-              </nav>
+              <h2>My Task</h2>
             </div>
           </div>
         </div>
@@ -185,4 +186,4 @@ render(){
         }
     }
 
-    export default DashboardMyListing;
+    export default DashboardMyTask;

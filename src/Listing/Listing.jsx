@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import axios from 'axios'
+import InfiniteScroll from 'react-infinite-scroller';
+import {Button} from 'semantic-ui-react'
 
 class Listing extends React.Component{
 	constructor(props) {
@@ -33,7 +35,11 @@ class Listing extends React.Component{
 		{
 			
 		}
-		
+	}
+
+	onChangeCategories = (e) =>{
+		localStorage.setItem('categories', e.target.value)
+		window.location = '/listing'
 	}
 	render(){
 	var self = this;
@@ -62,15 +68,7 @@ class Listing extends React.Component{
 						<div className="container">
 							<div className="row">
 								<div className="col-md-12">
-
-									<h2>{this.state.categories}</h2>
-									<nav id="breadcrumbs">
-										<ul>
-											<li><a href="/">Home</a></li>
-											<li>Listings</li>
-										</ul>
-									</nav>
-
+									<h2>{this.state.categories}</h2>			
 								</div>
 							</div>
 						</div>
@@ -87,30 +85,44 @@ class Listing extends React.Component{
 									<button className="button">Search</button>
 								</div>
 							</div>
+							<div className="row margin-bottom-25 margin-top-30">
+							<div className="col-md-12">
+								<div className="fullwidth-filters">
+									
+									<div className="panel-dropdown float-left">
+										<a href="listings-grid-full-width.html#">Categories</a>
+										<div className="panel-dropdown-content">
+											<div className="row">
+											<Button.Group size='large' vertical>
+											<center>
+												<Button value='All Categories' color='red' onClick={this.onChangeCategories}>All</Button><br/>
+												<Button value='Photography' color='green' onClick={this.onChangeCategories}>Photography</Button><br/>
+												<Button value='Makeup' color='pink' onClick={this.onChangeCategories}>Makeup</Button><br/>
+												<Button value='Writing' color='grey' onClick={this.onChangeCategories}>Writing</Button><br/>
+												<Button value='Graphic Design' color='purple' onClick={this.onChangeCategories}>Graphic Design</Button><br/>
+												<Button value='Cleaning' color='yellow' onClick={this.onChangeCategories}>Cleaning</Button><br/>
+												<Button value='Programming' color='teal' onClick={this.onChangeCategories}>Programming</Button><br/>
+											</center>
+											</Button.Group>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 
 							<div className="col-md-12">
 
 								<div className="row">
-								{services_listing}
-
+								<InfiniteScroll
+								    pageStart={0}
+								    hasMore={true}
+								>
+								    {services_listing}
+								</InfiniteScroll>
 								</div>
 
 								<div className="clearfix"></div>
-								<div className="row">
-									<div className="col-md-12">
-
-										<div className="pagination-container margin-top-20 margin-bottom-40">
-											<nav className="pagination">
-												<ul>
-													<li><a href="listings-grid-full-width.html#" className="current-page">1</a></li>
-													<li><a href="listings-grid-full-width.html#">2</a></li>
-													<li><a href="listings-grid-full-width.html#">3</a></li>
-													<li><a href="listings-grid-full-width.html#"><i className="sl sl-icon-arrow-right"></i></a></li>
-												</ul>
-											</nav>
-										</div>
-									</div>
-								</div>
 							</div>
 
 						</div>
