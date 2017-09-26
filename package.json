@@ -22,7 +22,7 @@
     "react-scripts": "1.0.10"
   },
   "scripts": {
-    "start": "NODE_PATH=src:src/Assets:src/Core:src/Dashboard:src/Home:src/Listing react-scripts start",
+    "start": "cross-env NODE_PATH=src:src/Assets:src/Core:src/Dashboard:src/Home:src/Listing react-scripts start",
     "build": "NODE_PATH=src:src/Assets:src/Core:src/Dashboard:src/Home:src/Listing react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
